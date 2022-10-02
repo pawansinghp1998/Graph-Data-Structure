@@ -5,9 +5,9 @@ public class Graph_Representation_Using_ArrayList {
         int nbr;
         int wt;
         Edge(int src,int nbr ,int wt){
-            src=src;
-            nbr=nbr;
-            wt=wt;
+            this.src=src;
+            this.nbr=nbr;
+            this.wt=wt;
         }
     }
 
