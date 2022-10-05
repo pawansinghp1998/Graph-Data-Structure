@@ -1,4 +1,7 @@
+import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.PriorityQueue;
 
 public class Graph_FindAllPaths_DFS {
         public  static  class Edge{
@@ -10,16 +13,65 @@ public class Graph_FindAllPaths_DFS {
                 this.nbr=nbr;
                 this.wt=wt;
             }
+        }static class Pair implements Comparable<Pair>{
+            int wsf;
+            String path;
+            Pair(int wsf,String path){
+                this.wsf=wsf;
+                this.path=path;
+            }
+            public int CompareTo(Pair o){
+                return this.wsf-o.wsf;
+            }
+
+        @Override
+        public int compareTo(Pair o) {
+            return 0;
         }
-        public  static void findAllPath(ArrayList<Edge>[] graph, int src, int dest, boolean visited[],String path){
+    }
+      static  String maxPath;
+        static int maxPathWt=Integer.MIN_VALUE;
+       static String minPath;
+      static int minPathWt=Integer.MAX_VALUE;
+      static String ceilPath;
+      static int ceilPathWt=Integer.MAX_VALUE;
+      static String floorPath;
+      static int floorPathWt=Integer.MIN_VALUE;
+static PriorityQueue<Pair> pq= new PriorityQueue<>();
+        public  static void findAllPath(ArrayList<Edge>[] graph, int src, int dest, boolean visited[],String path,int wsf,int criteria){
             if(src==dest) {
-                System.out.println(path);
+                if(wsf>maxPathWt){
+                    maxPathWt=wsf;
+                    maxPath=path;
+                }
+                if(wsf<minPathWt){
+                    minPathWt=wsf;
+                    minPath=path;
+                }
+                if(wsf>criteria && wsf<ceilPathWt){
+                    ceilPathWt=wsf;
+                    ceilPath=path;
+                }
+                if(wsf<criteria && wsf>floorPathWt){
+                    floorPathWt=wsf;
+                    floorPath=path;
+                }
+if(pq.size()<3) {
+    pq.add(new Pair(wsf, path));
+}
+    else{
+        if(wsf>pq.peek().wsf){
+            pq.remove();
+            pq.add(new Pair(wsf,path));
+        }
+    }
+
                 return;
             }
             visited[src]=true;
             for(Edge edge:graph[src]){
                 if(!visited[edge.nbr]){
-                    findAllPath(graph,edge.nbr,dest,visited,path+edge.nbr);
+                    findAllPath(graph,edge.nbr,dest,visited,path+edge.nbr,wsf+ edge.wt,criteria);
                 }}
             visited[src]=false;
         }
@@ -47,6 +99,18 @@ public class Graph_FindAllPaths_DFS {
             graph[6].add(new Edge(6,5,10));
             graph[6].add(new Edge(6,4,10));
             boolean visited[]=new boolean[7];
-            findAllPath(graph,0,6,visited,0+"");
+            findAllPath(graph,0,6,visited,0+"",0,40);
+            System.out.println(maxPath);
+            System.out.println(maxPathWt);
+            System.out.println(minPath);
+            System.out.println(minPathWt);
+            System.out.println(ceilPath);
+            System.out.println(ceilPathWt);
+            System.out.println(floorPath);
+            System.out.println(floorPathWt);
+
+            for(Pair p:pq){
+                System.out.print(p.wsf+" "+p.path+" ");
+            }
         }
     }
